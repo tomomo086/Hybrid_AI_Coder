@@ -1,0 +1,105 @@
+{
+  "id": "ed6e1213-1068-42bc-bf7f-0cefea43b0c0",
+  "function_name": "data_analyzer",
+  "requirements": {
+    "input": {
+      "description": "データ分析機能の入力パラメータ",
+      "parameters": [
+        {
+          "name": "data",
+          "type": "List[Dict[str, Union[int, float, str]]]",
+          "description": "分析対象のデータリスト（辞書形式）",
+          "required": true,
+          "default": null
+        },
+        {
+          "name": "target_column",
+          "type": "str",
+          "description": "分析対象のカラム名",
+          "required": true,
+          "default": null
+        },
+        {
+          "name": "analysis_type",
+          "type": "str",
+          "description": "分析タイプ (basic_stats, distribution, correlation)",
+          "required": false,
+          "default": "basic_stats"
+        }
+      ]
+    },
+    "output": {
+      "description": "データ分析結果",
+      "type": "dict",
+      "format": "{\"analysis_type\": str, \"target_column\": str, \"results\": dict, \"summary\": str}",
+      "example": "{\"analysis_type\": \"basic_stats\", \"target_column\": \"age\", \"results\": {\"mean\": 25.5, \"median\": 24.0, \"std\": 5.2}, \"summary\": \"データの基本統計情報\"}"
+    },
+    "validation": {
+      "input_validation": [
+        "dataは空でないリストであること",
+        "target_columnは文字列で、データ内のキーに存在すること",
+        "analysis_typeは'basic_stats', 'distribution', 'correlation'のいずれかであること",
+        "対象カラムの値は数値データであること（basic_stats, correlationの場合）"
+      ],
+      "output_validation": [
+        "analysis_typeは入力と一致すること",
+        "target_columnは入力と一致すること",
+        "resultsは辞書型で適切な統計値を含むこと",
+        "summaryは分析結果の要約文字列であること"
+      ]
+    },
+    "error_handling": {
+      "expected_errors": [
+        {
+          "error_type": "ValueError",
+          "condition": "無効な入力値の場合",
+          "message": "適切なエラーメッセージ"
+        }
+      ],
+      "logging": "エラーログの記録方針"
+    },
+    "dependencies": [
+      "statistics: 統計計算用の標準ライブラリ",
+      "typing: 型ヒント用",
+      "math: 数学関数用"
+    ],
+    "style": {
+      "coding_standard": "PEP 8準拠",
+      "docstring": "Google Style",
+      "type_hints": "必須",
+      "comments": "複雑なロジックには日本語コメント"
+    },
+    "test_cases": [
+      {
+        "name": "正常系テスト1",
+        "input": "テスト入力値",
+        "expected_output": "期待される出力",
+        "description": "テストケースの説明"
+      },
+      {
+        "name": "異常系テスト1",
+        "input": "異常な入力値",
+        "expected_error": "期待されるエラー",
+        "description": "エラーケースの説明"
+      }
+    ],
+    "performance": {
+      "complexity": "時間計算量の要求",
+      "memory": "メモリ使用量の制限",
+      "benchmarks": "性能要件"
+    },
+    "security": {
+      "input_sanitization": "入力値のサニタイゼーション",
+      "data_protection": "機密データの扱い",
+      "access_control": "アクセス制御の要件"
+    }
+  },
+  "status": "executed",
+  "created_at": "2025-09-06T11:17:05.399292",
+  "updated_at": "2025-09-06T15:04:00.492675",
+  "approved_at": "2025-09-06T21:15:00",
+  "approved_by": "Claude Code (Phase 3継続)",
+  "version": 1,
+  "hash": "0cd82eb24670f3fa",
+  "review_comments": []
+}
