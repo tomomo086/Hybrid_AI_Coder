@@ -1,0 +1,53 @@
+{
+  "version": "1.0",
+  "security": {
+    "sql_injection": [
+      "sql",
+      "query",
+      "execute",
+      "cursor"
+    ],
+    "command_injection": [
+      "os.system",
+      "subprocess",
+      "eval",
+      "exec"
+    ],
+    "file_traversal": [
+      "../",
+      "..\\",
+      "open(",
+      "file("
+    ],
+    "hardcoded_secrets": [
+      "password",
+      "api_key",
+      "secret",
+      "token"
+    ]
+  },
+  "performance": {
+    "inefficient_patterns": [
+      "nested_loops",
+      "redundant_operations"
+    ],
+    "memory_leaks": [
+      "unclosed_files",
+      "circular_references"
+    ]
+  },
+  "style": {
+    "naming_conventions": [
+      "snake_case",
+      "UPPER_CASE"
+    ],
+    "documentation": [
+      "docstring",
+      "type_hints"
+    ],
+    "code_structure": [
+      "function_length",
+      "complexity"
+    ]
+  }
+}
