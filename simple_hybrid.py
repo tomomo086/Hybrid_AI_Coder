@@ -104,8 +104,8 @@ class SimpleHybridPair:
         print(f"タスク {task_id} が見つかりません")
         return False
     
-    def call_deepseek(self, prompt: str) -> Optional[str]:
-        """DeepSeek APIを呼び出し"""
+    def _make_api_request(self, prompt: str, attempt: int = 1) -> Optional[str]:
+        """DeepSeek APIに単一リクエストを送信"""
         try:
             headers = {"Content-Type": "application/json"}
             data = {
@@ -115,26 +115,134 @@ class SimpleHybridPair:
                 "max_tokens": self.config["deepseek_api"]["max_tokens"]
             }
             
+            # タイムアウトを試行回数に応じて調整
+            timeout = 60 + (attempt * 30)
+            print(f"API呼び出し中... (試行{attempt}, タイムアウト{timeout}秒)")
+            
             response = requests.post(
                 self.config["deepseek_api"]["endpoint"],
                 headers=headers,
                 json=data,
-                timeout=60
+                timeout=timeout
             )
             
             if response.status_code == 200:
                 result = response.json()
-                return result["choices"][0]["message"]["content"]
+                content = result["choices"][0]["message"]["content"]
+                if content:
+                    print(f"✅ API成功: {len(content)}文字")
+                    return content
+                else:
+                    print("⚠️ 空のレスポンス")
+                    return None
             else:
-                print(f"API エラー: {response.status_code} - {response.text}")
+                print(f"❌ API エラー: {response.status_code} - {response.text}")
                 return None
                 
+        except requests.exceptions.Timeout:
+            print(f"⏰ タイムアウト ({timeout}秒経過) - 長いプロンプトの可能性")
+            return None
         except requests.exceptions.RequestException as e:
-            print(f"接続エラー: {e}")
+            print(f"🔌 接続エラー: {e}")
             return None
         except Exception as e:
-            print(f"予期しないエラー: {e}")
+            print(f"💥 予期しないエラー: {e}")
             return None
+    
+    def _chunk_prompt(self, prompt: str) -> list:
+        """プロンプトを行単位でチャンク分割"""
+        lines = prompt.split('\n')
+        total_lines = len(lines)
+        
+        # チャンクサイズを計算（60%で分割）
+        chunk_size = max(10, int(total_lines * 0.6))
+        
+        chunks = []
+        for i in range(0, total_lines, chunk_size):
+            chunk_lines = lines[i:i + chunk_size]
+            chunks.append('\n'.join(chunk_lines))
+        
+        print(f"📦 プロンプトを{len(chunks)}チャンクに分割 (各チャンク約{chunk_size}行)")
+        return chunks
+    
+    def _merge_responses(self, responses: list) -> str:
+        """複数のレスポンスをシンプルに結合"""
+        merged_parts = []
+        
+        for i, response in enumerate(responses):
+            if response and response.strip():
+                # コードブロックのマークダウンを除去
+                clean_response = response.strip()
+                if clean_response.startswith('```'):
+                    lines = clean_response.split('\n')
+                    # 最初と最後の```行を除去
+                    clean_lines = []
+                    skip_first = True
+                    for line in reversed(lines):
+                        if line.strip() == '```' and skip_first:
+                            skip_first = False
+                            continue
+                        clean_lines.append(line)
+                    clean_lines.reverse()
+                    
+                    if clean_lines and clean_lines[0].strip().startswith('```'):
+                        clean_lines = clean_lines[1:]
+                    
+                    clean_response = '\n'.join(clean_lines)
+                
+                merged_parts.append(f"# === チャンク{i+1} ===")
+                merged_parts.append(clean_response)
+        
+        result = '\n\n'.join(merged_parts)
+        print(f"🔗 {len(responses)}チャンクを結合完了: {len(result)}文字")
+        return result
+    
+    def call_deepseek(self, prompt: str) -> Optional[str]:
+        """DeepSeek API呼び出し（チャンク処理対応）"""
+        print("🤖 DeepSeek API呼び出し開始")
+        
+        # 最初は通常の処理を試行
+        result = self._make_api_request(prompt)
+        
+        if result:
+            print("✅ 通常処理で成功")
+            return result
+        
+        print("⚠️ 通常処理が失敗、チャンク処理を開始...")
+        
+        # チャンク分割処理
+        chunks = self._chunk_prompt(prompt)
+        
+        if len(chunks) <= 1:
+            print("❌ チャンク分割不可、処理を中断")
+            return None
+        
+        responses = []
+        for i, chunk in enumerate(chunks):
+            print(f"📝 チャンク{i+1}/{len(chunks)}を処理中...")
+            
+            # チャンク用のプロンプト準備
+            chunk_prompt = f"""以下の要件の一部を実装してください（パート{i+1}/{len(chunks)}）：
+
+{chunk}
+
+実用的で動作するPythonコードのみを返してください。説明は不要です。"""
+            
+            chunk_result = self._make_api_request(chunk_prompt, attempt=i+1)
+            
+            if chunk_result:
+                responses.append(chunk_result)
+                print(f"✅ チャンク{i+1}完了")
+            else:
+                print(f"❌ チャンク{i+1}失敗")
+                return None
+        
+        # レスポンスを結合
+        if responses:
+            return self._merge_responses(responses)
+        
+        print("❌ 全チャンク処理失敗")
+        return None
     
     def run_workflow(self, task_id: str) -> bool:
         """ワークフロー実行（タスク → DeepSeek → 結果保存）"""
@@ -171,7 +279,7 @@ class SimpleHybridPair:
 コードのみを返してください（説明文は不要）。
 """
         
-        print("DeepSeek に送信中...")
+        print("🚀 DeepSeek でコード生成を開始...")
         result = self.call_deepseek(prompt)
         
         if result:
