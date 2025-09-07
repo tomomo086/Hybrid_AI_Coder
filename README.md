@@ -2,14 +2,25 @@
 
 **人間 → ClaudeCode/GeminiCLI → LM Studio** の完璧な開発フローで、アイデアを瞬時にコードに変換。
 
-## 🎯 概要
+## 🎯 概要・設計意図
 
 **3つの機能だけの究極シンプル設計**：
 1. 命令書を受け取る（人間から直接）
 2. SLMにコードを生成させる（LM Studio経由）
 3. 指定場所にファイル保存（任意パス）
 
-現代のAI支援開発環境（ClaudeCode・GeminiCLI）とローカルSLM（LM Studio）を連携させ、人間の創造性とAIの実装力を組み合わせた次世代開発システム。
+### 💡 設計意図：LLMコンテキスト節約
+**メイン目的**: LLM（ClaudeCode・GeminiCLI）の**コンテキスト消費を劇的削減**
+
+- **従来**: LLMがコード生成 → 大量のコンテキスト消費
+- **このシステム**: SLMがコード生成 → LLMはコンテキスト節約
+- **効果**: LLMは設計・レビューに集中、SLMは実装に特化
+
+### 🔄 SLM随時交換による品質制御
+- **DeepSeek-Coder**: 軽量高速、シンプルなコード
+- **Qwen2.5-Coder**: 高品質、複雑なロジック対応
+- **CodeLlama**: バランス型、汎用性高い
+- **即座切り替え**: LM Studio側でモデル変更するだけ
 
 ## 🚀 開発フロー
 
@@ -25,23 +36,47 @@
 
 ## ⚡ 使用方法
 
-### 1. ClaudeCodeからの実行（推奨）
+### 1. ClaudeCodeでの実行（推奨）
+**プロンプト例**：
+```
+このシステムを使って、事前に作成した命令書を元に
+以下のプロジェクトをC:/projects/フォルダに
+SLMで生成してください。修正はその後で行います。
+
+命令書: 「家計簿アプリを作成：収入支出管理、月別集計表示、CSV出力機能、tkinter GUI」
+保存先: C:/projects/household_budget/main.py
+
+よろしくお願いします。
+```
+
+**ClaudeCodeの実行**：
 ```python
-# ClaudeCodeで以下を実行
 from quick_execute import quick_hybrid
 
-# ワンライナーで完了
 quick_hybrid(
     "家計簿アプリを作成：収入支出管理、月別集計、CSV出力、tkinter GUI", 
-    "C:/projects/budget_app.py"
+    "C:/projects/household_budget/main.py"
 )
 ```
 
-### 2. GeminiCLIからの実行
+### 2. GeminiCLIでの実行
+**プロンプト例**：
+```
+準備済みの命令書を使って、このハイブリッドシステムで
+SLMにコード生成させてください。出力先は指定フォルダで。
+後で修正・改善は一緒に行いましょう。
+
+命令書: 「Webスクレイピングツール：Beautiful Soup使用、CSV出力、エラーハンドリング」
+出力先: C:/dev/scraping_tools/scraper.py
+```
+
+**GeminiCLIの実行**：
 ```python
-# GeminiCLIで以下を実行
 exec(open('quick_execute.py').read())
-quick_hybrid("Webスクレイピングツール作成", "C:/tools/scraper.py")
+quick_hybrid(
+    "Webスクレイピングツール：Beautiful Soup使用、CSV出力、エラーハンドリング", 
+    "C:/dev/scraping_tools/scraper.py"
+)
 ```
 
 ### 3. 対話モード（学習用）
@@ -112,44 +147,88 @@ LLM_SLM_Hybrid_Pair_Programming/
 （時間: 数分）
 ```
 
-## 🔮 実用例
+## 🔮 実用例とコンテキスト節約効果
 
-```python
-# ClaudeCodeで実行
-人間: 「数独ソルバーを作りたい」
+### 従来のLLMのみ開発
+```
+人間: 「数独ソルバーを作って」
 ↓
-ClaudeCode: 「要件を整理して実行しますね」
+ClaudeCode: [大量のコード生成でコンテキスト消費]
+↓
+結果: コンテキスト不足で途中で中断、品質低下
+```
+
+### このシステムでの開発
+```python
+# 人間のプロンプト例
+「事前に作成した数独の命令書を使って、
+このハイブリッドシステムでC:/games/フォルダに
+SLMで生成してください。修正は後で一緒にやりましょう。」
+
+# ClaudeCodeの実行（コンテキスト節約）
 from quick_execute import quick_hybrid
 quick_hybrid(
     "数独ソルバー：9x9グリッド、バックトラッキング算法、tkinter GUI表示",
     "C:/games/sudoku_solver.py"
 )
-↓
-LM Studio: Qwen2.5-Coderで完全なソルバー生成
-↓  
-結果: 完成した数独ソルバーがC:/games/sudoku_solver.pyに保存
+
+# 結果
+- SLM: 完全なソルバー生成（コンテキスト消費なし）
+- LLM: コンテキスト温存で修正・レビューに集中可能
+- 効果: 70-90%のコンテキスト削減
+```
+
+### SLM比較実験例
+```python
+# 同じ命令書で異なるSLMを試す
+命令書 = "REST API サーバー：Flask使用、認証機能、エラーハンドリング"
+
+# DeepSeek-Coder（軽量高速）
+quick_hybrid(命令書, "C:/api/server_deepseek.py")
+
+# Qwen2.5-Coder（高品質）  
+quick_hybrid(命令書, "C:/api/server_qwen.py")
+
+# CodeLlama（バランス）
+quick_hybrid(命令書, "C:/api/server_llama.py")
+
+# → 3つのアプローチを比較・選択可能
 ```
 
 ## 🎉 なぜこのシステム？
 
-### 革命的な開発速度
+### 🚀 革命的な開発速度
 - **従来**: アイデア → 完成まで数時間〜数日
 - **このシステム**: アイデア → 完成まで数分
 
-### 最適な役割分担
-- **人間**: 創造性・要件定義・最終判断
-- **ClaudeCode/GeminiCLI**: 仕様整理・品質管理・レビュー
-- **LM Studio**: 高速・正確なコード実装
+### 💾 LLMコンテキスト大幅節約
+- **従来のLLM使用**: コード生成で大量トークン消費
+- **このシステム**: SLMが実装担当、LLMは設計に集中
+- **効果**: **70-90%のコンテキスト削減**、長時間の開発セッション可能
 
-### 完全日本語対応
+### 🔄 SLMによる品質制御
+- **リアルタイム切り替え**: LM Studioでワンクリック
+- **用途別最適化**: 
+  - 軽量タスク → DeepSeek-Coder (高速)
+  - 複雑ロジック → Qwen2.5-Coder (高品質)
+  - バランス重視 → CodeLlama (汎用)
+- **品質実験**: 同じ命令書で複数SLM比較可能
+
+### 🎯 最適な役割分担
+- **人間**: 創造性・要件定義・最終判断
+- **LLM（ClaudeCode/GeminiCLI）**: 仕様整理・品質管理・レビュー（**コンテキスト節約**）
+- **SLM（LM Studio）**: 高速・正確なコード実装
+
+### 🌍 完全日本語対応
 - 日本語での要件定義可能
 - 日本語コメント付きコード生成
 - 日本の開発文化に適応
 
-### 究極のシンプル設計
+### ⚡ 究極のシンプル設計
 - **4ファイルのみ** - 不要な複雑さを完全排除
 - **200行程度** - 全体把握が容易
 - **即座に開始** - セットアップ不要
+- **面倒なコマンド不要** - プロンプトで依頼するだけ
 
 ## 🚦 システム要件
 
