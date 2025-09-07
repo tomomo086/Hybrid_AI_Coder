@@ -1,10 +1,15 @@
-# 🤖 ハイブリッドAI開発システム
+# 🤖 超シンプルハイブリッドAI開発システム
 
 **人間 → ClaudeCode/GeminiCLI → LM Studio** の完璧な開発フローで、アイデアを瞬時にコードに変換。
 
 ## 🎯 概要
 
-現代のAI支援開発環境（ClaudeCode・GeminiCLI）とローカルSLM（LM Studio）を連携させ、人間の創造性とAIの実装力を組み合わせた次世代開発システムです。
+**3つの機能だけの究極シンプル設計**：
+1. 命令書を受け取る（人間から直接）
+2. SLMにコードを生成させる（LM Studio経由）
+3. 指定場所にファイル保存（任意パス）
+
+現代のAI支援開発環境（ClaudeCode・GeminiCLI）とローカルSLM（LM Studio）を連携させ、人間の創造性とAIの実装力を組み合わせた次世代開発システム。
 
 ## 🚀 開発フロー
 
@@ -18,48 +23,34 @@
 4. **LM Studio**: DeepSeek/Qwen等でコード生成
 5. **結果**: 指定場所に完成コードが保存
 
-## 💡 2つのアプローチ
+## ⚡ 使用方法
 
-### 1. **Complete Version** (`hybrid_pair.py`)
-- **本格開発用**: 企業・チーム開発
-- **フル機能**: 承認フロー、品質管理、履歴追跡
-- **対象**: 長期プロジェクト、複数人開発
-
-### 2. **Simple Version** (`simple_hybrid.py`) ⭐ 推奨  
-- **個人・学習用**: 即座に開始可能
-- **超軽量**: 核心機能のみ、理解しやすい
-- **対象**: プロトタイプ、アイデア検証、学習
-
-## ⚡ クイックスタート
-
-### ClaudeCodeからの実行（推奨）
+### 1. ClaudeCodeからの実行（推奨）
 ```python
 # ClaudeCodeで以下を実行
-exec(open('simple_hybrid.py').read())
+from quick_execute import quick_hybrid
 
-# タスク作成・実行
-app = SimpleHybridPair()
-app.create_task("calculator", "電卓アプリを作成してください")
-task_id = "<生成されたID>"
-app.approve_task(task_id)
-app.run_workflow(task_id)
+# ワンライナーで完了
+quick_hybrid(
+    "家計簿アプリを作成：収入支出管理、月別集計、CSV出力、tkinter GUI", 
+    "C:/projects/budget_app.py"
+)
 ```
 
-### GeminiCLIからの実行
-```python  
+### 2. GeminiCLIからの実行
+```python
 # GeminiCLIで以下を実行
-exec(open('simple_hybrid.py').read())
-
-# 直接実行も可能
-hybrid = SimpleHybridPair()
-hybrid.execute_instruction("Webスクレイピングツール", "scraping_tool")
+exec(open('quick_execute.py').read())
+quick_hybrid("Webスクレイピングツール作成", "C:/tools/scraper.py")
 ```
 
-### 対話モード（学習用）
+### 3. 対話モード（学習用）
 ```bash
-python simple_hybrid.py
-# コマンドラインでの対話的実行
+python ultra_simple.py
 ```
+- 命令書を入力（改行2回で終了）
+- 保存パスを指定（例: C:/projects/my_app.py）
+- 自動でコード生成・保存
 
 ## 🛠️ 必要な環境
 
@@ -81,21 +72,31 @@ python simple_hybrid.py
 pip install requests  # 必要なライブラリはこれだけ
 ```
 
-## 📁 プロジェクト構造
+## 📁 ファイル構成（4ファイルのみ）
 
 ```
 LLM_SLM_Hybrid_Pair_Programming/
-├── simple_hybrid.py       # Simple版（推奨開始点）
-├── README_SIMPLE.md       # Simple版詳細ガイド
-├── hybrid_pair.py         # Complete版メインCLI
-├── README.md              # このファイル
-├── run_hybrid_pair.bat    # Windows実行用
-├── requirements.txt       # 依存関係
-├── config/                # 設定ファイル
-├── data/                  # 実行データ（命令書・生成コード）
-├── src/                   # Complete版ソースコード
-└── archive/               # アーカイブファイル
+├── ultra_simple.py          # メインシステム（150行）
+├── quick_execute.py         # ワンライナー実行（50行）
+├── simple_config.json       # SLM接続設定
+└── README.md               # このファイル
 ```
+
+### 設定ファイル
+`simple_config.json` が自動作成されます：
+
+```json
+{
+  "deepseek_api": {
+    "endpoint": "http://localhost:1234/v1/chat/completions",
+    "model": "qwen2.5-coder-14b-instruct",
+    "temperature": 0.2,
+    "max_tokens": 2000
+  }
+}
+```
+
+**LM Studioでモデル切り替えするだけ** - 設定ファイルのmodel名は参考程度
 
 ## 🔄 実際のワークフロー
 
@@ -111,18 +112,23 @@ LLM_SLM_Hybrid_Pair_Programming/
 （時間: 数分）
 ```
 
-### 詳細フロー
-1. **要件定義** (人間): 「○○を作りたい」
-2. **仕様整理** (ClaudeCode/GeminiCLI): 技術要件整理
-3. **システム実行** (AI支援環境): このシステムを呼び出し
-4. **コード生成** (LM Studio): ローカルSLMで実装
-5. **品質確保** (ClaudeCode/GeminiCLI): レビュー・修正
-6. **完成** (自動): 指定場所にファイル保存
+## 🔮 実用例
 
-## 📚 ドキュメント
-
-- **Simple版**: `README_SIMPLE.md` - 超軽量版の詳細
-- **アーカイブ**: `archive/` - 過去の詳細ドキュメント
+```python
+# ClaudeCodeで実行
+人間: 「数独ソルバーを作りたい」
+↓
+ClaudeCode: 「要件を整理して実行しますね」
+from quick_execute import quick_hybrid
+quick_hybrid(
+    "数独ソルバー：9x9グリッド、バックトラッキング算法、tkinter GUI表示",
+    "C:/games/sudoku_solver.py"
+)
+↓
+LM Studio: Qwen2.5-Coderで完全なソルバー生成
+↓  
+結果: 完成した数独ソルバーがC:/games/sudoku_solver.pyに保存
+```
 
 ## 🎉 なぜこのシステム？
 
@@ -140,36 +146,22 @@ LLM_SLM_Hybrid_Pair_Programming/
 - 日本語コメント付きコード生成
 - 日本の開発文化に適応
 
-## 🚦 どちらを選ぶ？
+### 究極のシンプル設計
+- **4ファイルのみ** - 不要な複雑さを完全排除
+- **200行程度** - 全体把握が容易
+- **即座に開始** - セットアップ不要
 
-| 用途 | 推奨版 | 理由 |
-|------|--------|------|
-| **個人開発** | Simple | 軽量・即座に開始可能 |
-| **学習・実験** | Simple | 仕組み理解しやすい |
-| **プロトタイプ** | Simple | アイデア検証に最適 |
-| **企業開発** | Complete | 承認フロー・品質管理 |
-| **チーム開発** | Complete | 履歴管理・責任明確化 |
+## 🚦 システム要件
 
-**迷ったらSimple版から始めてください！** 🎯
+- **Python 3.7+**
+- **requests ライブラリ**
+- **LM Studio + 任意のコーディングモデル**
+- **ClaudeCode または GeminiCLI**（推奨）
 
-## 🔮 実用例
-
-```python
-# ClaudeCodeで実行
-人間: 「家計簿アプリを作りたい」
-↓
-ClaudeCode: 「要件を整理して実行します」
-exec(open('simple_hybrid.py').read())
-app = SimpleHybridPair()
-app.create_task("household_budget", "家計簿アプリ：収入支出管理、月別集計、CSV出力、tkinter GUI")
-app.approve_task("<ID>")  
-app.run_workflow("<ID>")
-↓
-LM Studio: 完全なGUIアプリケーション生成
-↓  
-結果: 完成した家計簿アプリが指定場所に保存
-```
+これだけです！
 
 ---
 
 **人間の創造性 × AIの実装力 = 未来の開発スタイル** 🚀
+
+*アイデアを持った瞬間から数分でコードが完成する時代へ*
