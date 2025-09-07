@@ -1,4 +1,4 @@
-# 🤖 LLM_SLM_Hybrid_Pair_Programming - 超シンプルハイブリッドAI開発システム
+# 🤖 Hybrid_AI_Coder - 超シンプルハイブリッドAI開発システム
 
 ![Platform: Python | LM Studio](https://img.shields.io/badge/Platform-Python%20%7C%20LM%20Studio-green.svg)
 ![Language: Python](https://img.shields.io/badge/Language-Python-orange.svg)
