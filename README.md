@@ -76,16 +76,13 @@ LLM_SLM_Hybrid_Pair_Programming/
 
 ```json
 {
-  "deepseek_api": {
-    "endpoint": "http://localhost:1234/v1/chat/completions",
-    "model": "qwen2.5-coder-14b-instruct",
-    "temperature": 0.2,
-    "max_tokens": 2000
+  "slm_api": {
+    "endpoint": "http://localhost:1234/v1/chat/completions"
   }
 }
 ```
 
-**LM Studioでモデル切り替えするだけ** - 設定ファイルのmodel名は参考程度
+**LM Studioでモデル・パラメータを設定** - 設定ファイルにはエンドポイントのみ
 
 ## 🔄 実際のワークフロー
 
