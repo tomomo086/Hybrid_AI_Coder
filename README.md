@@ -1,5 +1,11 @@
 # 🤖 LLM_SLM_Hybrid_Pair_Programming - 超シンプルハイブリッドAI開発システム
 
+![Platform: Python | LM Studio](https://img.shields.io/badge/Platform-Python%20%7C%20LM%20Studio-green.svg)
+![Language: Python](https://img.shields.io/badge/Language-Python-orange.svg)
+![AI: Claude4 | ClaudeCode | LM Studio](https://img.shields.io/badge/AI-Claude4%20%7C%20ClaudeCode%20%7C%20LM%20Studio-blue.svg)
+![Method: Hybrid AI Development](https://img.shields.io/badge/Method-Hybrid%20AI%20Development-red.svg)
+![Status: Active Development](https://img.shields.io/badge/Status-Active%20Development-purple.svg)
+
 > LLMのコンテキスト節約を重視したハイブリッドAI開発システムの実装
 
 **💡 このREADMEの価値**: LLM + SLMの組み合わせによる効率的なコード生成と、コンテキスト消費を劇的に削減する開発手法を実践的に共有
