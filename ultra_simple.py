@@ -30,11 +30,8 @@ class UltraSimpleHybrid:
         else:
             # デフォルト設定作成
             default_config = {
-                "deepseek_api": {
-                    "endpoint": "http://localhost:1234/v1/chat/completions",
-                    "model": "deepseek-coder-6.7b-instruct",
-                    "temperature": 0.2,
-                    "max_tokens": 2000
+                "slm_api": {
+                    "endpoint": "http://localhost:1234/v1/chat/completions"
                 }
             }
             with open(self.config_file, 'w', encoding='utf-8') as f:
@@ -57,15 +54,12 @@ class UltraSimpleHybrid:
             
             headers = {"Content-Type": "application/json"}
             data = {
-                "model": self.config["deepseek_api"]["model"],
-                "messages": [{"role": "user", "content": enhanced_instruction}],
-                "temperature": self.config["deepseek_api"]["temperature"],
-                "max_tokens": self.config["deepseek_api"]["max_tokens"]
+                "messages": [{"role": "user", "content": enhanced_instruction}]
             }
             
             print("🤖 SLMにコード生成を依頼中...")
             response = requests.post(
-                self.config["deepseek_api"]["endpoint"],
+                self.config["slm_api"]["endpoint"],
                 headers=headers,
                 json=data,
                 timeout=60
