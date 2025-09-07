@@ -35,10 +35,6 @@ class UltraSimpleHybrid:
                     "model": "deepseek-coder-6.7b-instruct",
                     "temperature": 0.2,
                     "max_tokens": 2000
-                },
-                "output_settings": {
-                    "base_directory": "output",
-                    "create_project_folders": True
                 }
             }
             with open(self.config_file, 'w', encoding='utf-8') as f:
@@ -133,36 +129,25 @@ class UltraSimpleHybrid:
         result = '\n'.join(code_lines).strip()
         return result if result else content.strip()
     
-    def save_to_location(self, content: str, project_name: str, filename: str = None) -> str:
+    def save_to_location(self, content: str, save_path: str) -> str:
         """指定場所にファイル保存"""
-        base_dir = Path(self.config["output_settings"]["base_directory"])
+        file_path = Path(save_path)
         
-        # プロジェクトフォルダ作成
-        if self.config["output_settings"]["create_project_folders"]:
-            project_dir = base_dir / project_name
-            project_dir.mkdir(parents=True, exist_ok=True)
-            save_dir = project_dir
-        else:
-            base_dir.mkdir(parents=True, exist_ok=True)
-            save_dir = base_dir
-        
-        # ファイル名決定
-        if not filename:
-            timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-            filename = f"{project_name}_{timestamp}.py"
+        # ディレクトリが存在しない場合は作成
+        file_path.parent.mkdir(parents=True, exist_ok=True)
         
         # 保存
-        file_path = save_dir / filename
         with open(file_path, 'w', encoding='utf-8') as f:
             f.write(content)
         
         print(f"💾 ファイル保存完了: {file_path}")
         return str(file_path)
     
-    def execute_instruction(self, instruction: str, project_name: str, filename: str = None) -> bool:
+    def execute_instruction(self, instruction: str, save_path: str) -> bool:
         """命令書実行：SLM生成 → 保存"""
-        print(f"🚀 実行開始: {project_name}")
+        print(f"🚀 実行開始")
         print(f"📝 命令内容: {instruction[:100]}...")
+        print(f"💾 保存先: {save_path}")
         
         # 1. SLMでコード生成
         generated_code = self.call_slm(instruction)
@@ -171,17 +156,16 @@ class UltraSimpleHybrid:
             return False
         
         # 2. 指定場所に保存
-        saved_file = self.save_to_location(generated_code, project_name, filename)
+        saved_file = self.save_to_location(generated_code, save_path)
         
         print(f"✅ 実行完了!")
-        print(f"📁 保存場所: {saved_file}")
         return True
 
 def main():
     """メイン実行"""
     print("=== 超シンプルハイブリッド実行システム ===")
     print("使用方法:")
-    print("1. execute_instruction(命令書, プロジェクト名, ファイル名)")
+    print("1. execute_instruction(命令書, 保存パス)")
     print("2. または対話モードで実行")
     print()
     
@@ -190,15 +174,6 @@ def main():
     # 対話モード
     while True:
         print("\n" + "="*50)
-        project_name = input("プロジェクト名を入力 (終了: exit): ").strip()
-        
-        if project_name.lower() == 'exit':
-            print("終了します")
-            break
-        
-        if not project_name:
-            print("プロジェクト名を入力してください")
-            continue
         
         print("\n命令書を入力してください (改行2回で終了):")
         instruction_lines = []
@@ -219,15 +194,18 @@ def main():
         instruction = "\n".join(instruction_lines)
         
         if not instruction.strip():
-            print("命令書が空です")
+            if input("終了しますか？ (y/n): ").lower() == 'y':
+                print("終了します")
+                break
             continue
         
-        filename = input("ファイル名 (空白でデフォルト): ").strip()
-        if not filename:
-            filename = None
+        save_path = input("保存パス (例: C:/projects/my_app.py): ").strip()
+        if not save_path:
+            print("保存パスを入力してください")
+            continue
         
         # 実行
-        hybrid.execute_instruction(instruction, project_name, filename)
+        hybrid.execute_instruction(instruction, save_path)
 
 if __name__ == "__main__":
     main()

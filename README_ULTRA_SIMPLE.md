@@ -7,10 +7,13 @@
 
 ## 使用方法
 
-### 1. 基本実行
+### 1. 基本実行（対話モード）
 ```bash
 python ultra_simple.py
 ```
+- 命令書を入力（改行2回で終了）
+- 保存パスを指定（例: C:/projects/my_app.py）
+- 自動でコード生成・保存
 
 ### 2. プログラムから実行
 ```python
@@ -19,8 +22,7 @@ from quick_execute import quick_hybrid
 # ワンライナーで実行
 quick_hybrid(
     "電卓アプリを作って", 
-    "calculator_app", 
-    "calc.py"
+    "C:/projects/calculator.py"
 )
 ```
 
@@ -28,7 +30,7 @@ quick_hybrid(
 ```python
 # ClaudeCodeで以下を実行
 exec(open('quick_execute.py').read())
-quick_hybrid("要件をここに書く", "プロジェクト名")
+quick_hybrid("要件をここに書く", "保存パス")
 ```
 
 ## 設定ファイル
@@ -42,30 +44,13 @@ quick_hybrid("要件をここに書く", "プロジェクト名")
     "model": "deepseek-coder-6.7b-instruct",
     "temperature": 0.2,
     "max_tokens": 2000
-  },
-  "output_settings": {
-    "base_directory": "output",
-    "create_project_folders": true
   }
 }
 ```
 
-## ファイル構造
+## モデル選択
 
-```
-output/
-├── プロジェクト名1/
-│   ├── ファイル1.py
-│   └── ファイル2.py
-├── プロジェクト名2/
-│   └── ファイル.py
-└── ...
-```
-
-## 前提条件
-
-- LM Studio で DeepSeek-Coder が起動中
-- ポート 1234 で API サーバーが動作中
+LM Studioで任意のモデルを選択するだけ。設定ファイルのmodel名は参考程度。
 
 ## 完全な実行例
 
@@ -77,12 +62,11 @@ hybrid.execute_instruction(
     """
     家計簿アプリを作成してください：
     - 収入・支出の記録
-    - 月別集計表示
+    - 月別集計表示  
     - CSV出力機能
     - tkinterでGUI
     """, 
-    "household_budget",
-    "budget_app.py"
+    "C:/projects/budget/household_app.py"
 )
 ```
 
@@ -90,6 +74,6 @@ hybrid.execute_instruction(
 
 - Python 3.7+
 - requests ライブラリ
-- LM Studio + DeepSeek-Coder
+- LM Studio + 任意のコーディングモデル
 
 これだけです！

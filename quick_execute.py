@@ -10,20 +10,19 @@ result = quick_hybrid("電卓アプリを作って", "calculator_app")
 
 from ultra_simple import UltraSimpleHybrid
 
-def quick_hybrid(instruction: str, project_name: str, filename: str = None) -> bool:
+def quick_hybrid(instruction: str, save_path: str) -> bool:
     """
     ワンライナーでハイブリッド実行
     
     Args:
         instruction: SLMへの命令書
-        project_name: プロジェクト名（フォルダ名になる）
-        filename: ファイル名（省略可）
+        save_path: 保存パス（フルパス）
     
     Returns:
         bool: 成功したかどうか
     """
     hybrid = UltraSimpleHybrid()
-    return hybrid.execute_instruction(instruction, project_name, filename)
+    return hybrid.execute_instruction(instruction, save_path)
 
 def test_system() -> bool:
     """システムテスト"""
@@ -35,7 +34,7 @@ def test_system() -> bool:
 """
     
     print("🧪 システムテスト実行...")
-    result = quick_hybrid(test_instruction, "test_greeting", "greeting.py")
+    result = quick_hybrid(test_instruction, "test_greeting.py")
     
     if result:
         print("✅ テスト成功！")
