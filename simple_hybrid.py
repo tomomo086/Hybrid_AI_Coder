@@ -311,7 +311,7 @@ class SimpleHybridPair:
     
     def run_cli(self):
         """CLI実行"""
-        print("🤖 Simple Hybrid Pair Programming System")
+        print("[INFO] Simple Hybrid Pair Programming System")
         print("使用方法:")
         print("  create <タイトル> <説明>  - 新規タスク作成")
         print("  list                     - タスク一覧")
