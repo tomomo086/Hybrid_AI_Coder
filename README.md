@@ -212,7 +212,7 @@ SLM: 「どう作るか」の具体的実装
 - **Python 3.7+**
 - **requests ライブラリ**
 - **LM Studio + 任意のコーディングモデル**
-- **ClaudeCode または GeminiCLI**（推奨）
+- **ClaudeCode**（推奨） または GeminiCLI
 
 これだけです！
 
