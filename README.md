@@ -30,7 +30,13 @@
 
 このシステムを使って実際にゲームを開発した事例をご覧いただけます：
 
-[![Hybrid AI Coderで作った横スクロールアクションゲーム](https://img.youtube.com/vi/jBFzPxjboac/maxresdefault.jpg)](https://youtu.be/jBFzPxjboac)
+<div align="center">
+
+[![🎬 動画を見る - Hybrid AI Coderで作った横スクロールアクションゲーム](https://img.youtube.com/vi/jBFzPxjboac/maxresdefault.jpg)](https://youtu.be/jBFzPxjboac)
+
+**▶️ クリックして動画を再生**
+
+</div>
 
 **🎮 横スクロールアクションゲーム開発事例**
 - **開発時間**: 約2時間程度
