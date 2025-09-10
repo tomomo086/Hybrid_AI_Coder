@@ -26,6 +26,22 @@
 - **CodeLlama**: バランス型、汎用性高い
 - **即座切り替え**: LM Studio側でモデル変更するだけ
 
+## 📹 実際の開発事例
+
+このシステムを使って実際にゲームを開発した事例をご覧いただけます：
+
+[![Hybrid AI Coderで作った横スクロールアクションゲーム](https://img.youtube.com/vi/jBFzPxjboac/maxresdefault.jpg)](https://youtu.be/jBFzPxjboac)
+
+**🎮 横スクロールアクションゲーム開発事例**
+- **開発時間**: 約10分程度
+- **使用したSLM**: Qwen2.5-Coder
+- **特徴**: シンプルな要求から完全なPygameベースの横スクロールアクションを自動生成
+- **成果**: キャラクター操作・敵・障害物のあるゲームが短時間で完成
+
+> 📺 **動画で見る**: [Hybrid AI Coderで横スクロールアクション作成 - YouTube](https://youtu.be/jBFzPxjboac)
+
+このように、LLMでの要件定義からSLMでの実装まで、効率的な開発フローを実現しています。
+
 ## 🚀 開発フロー
 
 ```
