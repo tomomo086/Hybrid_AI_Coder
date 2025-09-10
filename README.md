@@ -32,9 +32,11 @@
 
 <div align="center">
 
-[![🎬 動画を見る - Hybrid AI Coderで作った横スクロールアクションゲーム](https://img.youtube.com/vi/jBFzPxjboac/maxresdefault.jpg)](https://youtu.be/jBFzPxjboac)
+[![🎮 横スクロールアクションゲーム開発動画](https://img.youtube.com/vi/jBFzPxjboac/maxresdefault.jpg)](https://youtu.be/jBFzPxjboac)
 
-**▶️ クリックして動画を再生**
+**🎬 ▶️ YouTubeで動画を見る (クリックで再生)**
+
+**↑ サムネイルをクリックしてください ↑**
 
 </div>
 
